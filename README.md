@@ -24,3 +24,16 @@ Suíte de ferramentas de engenharia civil no navegador. Primeiro módulo: planil
 ## Atalhos
 
 Setas, Tab, Enter, F2, Delete, Ctrl+Setas, Ctrl+C/X/V, Ctrl+Z/Y, Ctrl+A.
+
+## Testes
+
+    npm test
+
+## Pendência de segurança: xlsx
+
+O `xlsx@0.18.5` do npm tem vulnerabilidades conhecidas (prototype pollution e ReDoS) e não recebe mais correções lá.
+A SheetJS publica as versões novas apenas no CDN deles. Para atualizar (a API é a mesma, sem mudanças no código):
+
+    npm i https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
+
+O `xlsx` já é carregado sob demanda (`import('xlsx')` em `src/lib/io.js`), em chunk separado.

@@ -88,7 +88,10 @@ class Workbook {
     if (!this.ready) return ''
     const v = this.hf.getCellSerialized({ sheet: this.active, row: r, col: c })
     if (v == null) return ''
-    return typeof v === 'number' ? String(v).replace('.', ',') : String(v)
+    if (typeof v === 'number') return String(v).replace('.', ',')
+    // decimais digitados com vírgula são guardados como texto "1.5" e lidos como número pelo motor
+    if (typeof v === 'string' && /^-?\d+\.\d+$/.test(v) && typeof this.cellValue(r, c) === 'number') return v.replace('.', ',')
+    return String(v)
   }
 
   colWidth(c) {
