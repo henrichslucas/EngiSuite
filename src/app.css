@@ -398,3 +398,83 @@ input {
     grid-template-columns: 1fr;
   }
 }
+
+.mod .acts {
+  display: flex;
+  gap: 8px;
+}
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+    background: #fff;
+    color: #000;
+  }
+
+  .mod {
+    display: block;
+    overflow: visible;
+    height: auto;
+    color: #000;
+  }
+
+  .mod .card {
+    background: none;
+    border: 0;
+    backdrop-filter: none;
+    margin-bottom: 14px;
+    break-inside: avoid;
+  }
+
+  .mod .acts,
+  .mod .btn,
+  .mod .note,
+  .mod .opts button {
+    display: none;
+  }
+
+  .print-only {
+    display: block;
+    margin: 0 0 12px;
+    font-size: 12px;
+  }
+
+  .mod h2,
+  .mod dd,
+  .mod dt,
+  .mod .sub,
+  .mod .field,
+  .mod .in input,
+  .mod .in select,
+  .mod .in em,
+  .mod .chip,
+  .mod .chart {
+    color: #000;
+  }
+
+  .mod .in,
+  .mod .res > div,
+  .mod .chip {
+    border-color: #999;
+    background: none;
+  }
+
+  .mod .res .good dd {
+    color: #136b25;
+  }
+
+  .mod .res .bad dd,
+  .mod .err {
+    color: #a11;
+  }
+
+  .mod .warn {
+    color: #7a5a00;
+  }
+}

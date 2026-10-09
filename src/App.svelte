@@ -278,6 +278,23 @@
     background: var(--panel-2);
   }
 
+  @media print {
+    .app {
+      position: static;
+      display: block;
+      padding: 0;
+      background: none;
+    }
+
+    .top {
+      display: none;
+    }
+
+    .modview {
+      grid-row: auto;
+    }
+  }
+
   .modview {
     grid-row: 2 / 5;
     min-height: 0;

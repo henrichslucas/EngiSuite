@@ -13,10 +13,14 @@
   }
 </script>
 
+<p class="print-only">EngiSuite · Memória de cálculo · {nome} · {new Date().toLocaleDateString('pt-BR')}</p>
 <div class="head">
   <h2>{titulo}</h2>
   {#if !erro && itens.length}
-    <button class="btn" onclick={copiar}>{copiado ? 'Copiado' : 'Copiar resultados'}</button>
+    <span class="acts">
+      <button class="btn" onclick={copiar}>{copiado ? 'Copiado' : 'Copiar'}</button>
+      <button class="btn" onclick={() => window.print()}>Imprimir / PDF</button>
+    </span>
   {/if}
 </div>
 

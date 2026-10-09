@@ -6,14 +6,20 @@ import Ancoragem from './Ancoragem.svelte'
 import Laje from './Laje.svelte'
 import Pilar from './Pilar.svelte'
 import Sapata from './Sapata.svelte'
+import Flecha from './Flecha.svelte'
+import PilarFlexo from './PilarFlexo.svelte'
+import Aco from './Aco.svelte'
 import Unidades from './Unidades.svelte'
 
 export const MODULOS = [
   { id: 'viga', nome: 'Viga: flexão', componente: Viga },
   { id: 'cisalhamento', nome: 'Viga: cisalhamento', componente: Cisalhamento },
   { id: 'esforcos', nome: 'Esforços e flecha', componente: Esforcos },
+  { id: 'flecha', nome: 'Flecha (concreto)', componente: Flecha },
   { id: 'laje', nome: 'Laje', componente: Laje },
   { id: 'pilar', nome: 'Pilar', componente: Pilar },
+  { id: 'pilarflexo', nome: 'Pilar: flexo-compressão', componente: PilarFlexo },
+  { id: 'aco', nome: 'Perfil de aço', componente: Aco },
   { id: 'sapata', nome: 'Sapata', componente: Sapata },
   { id: 'ancoragem', nome: 'Ancoragem', componente: Ancoragem },
   { id: 'secao', nome: 'Seções', componente: Secao },

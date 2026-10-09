@@ -171,3 +171,85 @@ describe('unidades', () => {
     expect(Number.isNaN(converter('Força', 1, 'kN', 'm'))).toBe(true)
   })
 })
+
+import { calcularFlecha, Ecs, xi } from '../src/modules/flecha.js'
+import { calcularFlexoCompressao, diagramaNM } from '../src/modules/pilarFlexo.js'
+import { calcularPerfilI } from '../src/modules/aco.js'
+
+describe('flecha (Branson)', () => {
+  const e = { esquema: 'biapoiada_q', L: 5, carga: 15, bw: 20, h: 50, dl: 4, as: 8, fck: 25 }
+  it('constantes', () => {
+    expect(Ecs(25)).toBeCloseTo(24150, 0)
+    expect(xi(1)).toBeCloseTo(0.677, 2)
+    expect(xi(70)).toBeCloseTo(2, 1)
+    expect(xi(100)).toBe(2)
+  })
+  it('momento de fissuração e inércias', () => {
+    const r = calcularFlecha(e)
+    expect(r.ok).toBe(true)
+    expect(r.Mr).toBeCloseTo(32.06, 1)
+    expect(r.Ma).toBeCloseTo(46.875, 3)
+    expect(r.III).toBeLessThan(r.Ieq)
+    expect(r.Ieq).toBeLessThan(r.Ic)
+    expect(r.fissurada).toBe(true)
+  })
+  it('flecha total = imediata × (1 + αf)', () => {
+    const r = calcularFlecha(e)
+    expect(r.dt).toBeCloseTo(r.di * (1 + r.af), 6)
+    expect(r.af).toBeCloseTo(xi(70) - xi(1), 6)
+  })
+  it('seção não fissurada usa Ic e armadura comprimida reduz αf', () => {
+    const n = calcularFlecha({ ...e, carga: 3 })
+    expect(n.Ieq).toBeCloseTo(n.Ic, 6)
+    expect(calcularFlecha({ ...e, asl: 4 }).af).toBeLessThan(calcularFlecha(e).af)
+  })
+  it('balanço é mais flexível e entrada inválida', () => {
+    expect(calcularFlecha({ ...e, esquema: 'balanco_q' }).di).toBeGreaterThan(calcularFlecha(e).di)
+    expect(calcularFlecha({ ...e, as: 0 }).ok).toBe(false)
+  })
+})
+
+describe('flexo-compressão', () => {
+  const sec = { b: 30, h: 50, dl: 4, as: 20, fck: 30, fyk: 500 }
+  it('diagrama N-M: extremos e crescimento de N', () => {
+    const pts = diagramaNM(sec)
+    expect(pts[0].N).toBeCloseTo(-20 * (50 / 1.15), 6)
+    const nmax = 0.85 * (3 / 1.4) * 30 * 50 + 20 * 42
+    expect(pts[pts.length - 1].N).toBeCloseTo(nmax, -1)
+    for (let i = 1; i < pts.length; i++) expect(pts[i].N).toBeGreaterThanOrEqual(pts[i - 1].N - 1e-9)
+  })
+  it('MRd é máximo na região do ponto balanceado', () => {
+    const m0 = calcularFlexoCompressao({ ...sec, nk: 10, mk: 1 }).mrd
+    const mb = calcularFlexoCompressao({ ...sec, nk: 700, mk: 1 }).mrd
+    const mh = calcularFlexoCompressao({ ...sec, nk: 1500, mk: 1 }).mrd
+    expect(mb).toBeGreaterThan(m0)
+    expect(mb).toBeGreaterThan(mh)
+  })
+  it('flexão simples ≈ viga (N ≈ 0): compara com dimensionamento de armadura dupla simétrica', () => {
+    const r = calcularFlexoCompressao({ ...sec, nk: 0, mk: 1 })
+    expect(r.mrd).toBeGreaterThan(100)
+    expect(r.mrd).toBeLessThan(400)
+  })
+  it('momento mínimo, excesso de carga e validação', () => {
+    expect(calcularFlexoCompressao({ ...sec, nk: 500, mk: 0 }).avisos.join()).toMatch(/mínimo/)
+    expect(calcularFlexoCompressao({ ...sec, nk: 9000, mk: 0 }).ok).toBe(false)
+    expect(calcularFlexoCompressao({ ...sec, as: 0, nk: 1, mk: 1 }).ok).toBe(false)
+  })
+})
+
+describe('perfil I de aço', () => {
+  const p = { bf: 15, tf: 1.2, tw: 0.8, h: 30, fy: 345, msk: 80, vsk: 60 }
+  it('propriedades e capacidade', () => {
+    const r = calcularPerfilI(p)
+    expect(r.A).toBeCloseTo(2 * 15 * 1.2 + 27.6 * 0.8, 6)
+    expect(r.Ix).toBeCloseTo((15 * 27000 - 14.2 * 27.6 ** 3) / 12, 4)
+    expect(r.Zx).toBeCloseTo(15 * 1.2 * 28.8 + (0.8 * 27.6 ** 2) / 4, 6)
+    expect(r.compacta).toBe(true)
+    expect(r.Mrd).toBeCloseTo(Math.min(r.Zx, 1.5 * r.Wx) * 34.5 / 1.1 / 100, 6)
+    expect(r.Vrd).toBeCloseTo((0.6 * 30 * 0.8 * 34.5) / 1.1, 6)
+  })
+  it('flambagem lateral e inválidos', () => {
+    expect(calcularPerfilI({ ...p, lb: 1000 }).avisos.join()).toMatch(/FLT/)
+    expect(calcularPerfilI({ ...p, h: 2 }).ok).toBe(false)
+  })
+})
