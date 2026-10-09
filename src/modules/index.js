@@ -9,9 +9,11 @@ import Sapata from './Sapata.svelte'
 import Flecha from './Flecha.svelte'
 import PilarFlexo from './PilarFlexo.svelte'
 import Aco from './Aco.svelte'
+import Cad from '../cad/Cad.svelte'
 import Unidades from './Unidades.svelte'
 
 export const MODULOS = [
+  { id: 'cad', nome: 'Desenho 2D (CAD)', componente: Cad },
   { id: 'viga', nome: 'Viga: flexão', componente: Viga },
   { id: 'cisalhamento', nome: 'Viga: cisalhamento', componente: Cisalhamento },
   { id: 'esforcos', nome: 'Esforços e flecha', componente: Esforcos },
