@@ -1,4 +1,5 @@
 import { parseInput, plain } from './util.js'
+import { formulaDoXlsx } from './formulas.js'
 
 const download = (blob, name) => {
   const url = URL.createObjectURL(blob)
@@ -11,7 +12,7 @@ const download = (blob, name) => {
 
 const cellRaw = (cell, normalize) => {
   if (!cell) return null
-  if (cell.f) return '=' + cell.f
+  if (cell.f) return '=' + formulaDoXlsx(cell.f)
   if (cell.t === 'e') return null
   if (cell.t === 's' && normalize) return parseInput(cell.v)
   return cell.v ?? null

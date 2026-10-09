@@ -6,6 +6,8 @@
   import Grid from './lib/Grid.svelte'
   import FormulaBar from './lib/FormulaBar.svelte'
   import Icon from './lib/Icon.svelte'
+  import FormulaHelper from './lib/FormulaHelper.svelte'
+  import Biblioteca from './lib/Biblioteca.svelte'
   import { MODULOS } from './modules/index.js'
 
   let mod = $state('planilhas')
@@ -241,6 +243,9 @@
   </footer>
   {/if}
 </div>
+
+<FormulaHelper />
+<Biblioteca />
 
 <input bind:this={fileInput} type="file" accept=".xlsx,.xls,.ods,.csv,.tsv" multiple hidden onchange={onPick} />
 

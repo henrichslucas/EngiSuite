@@ -34,7 +34,7 @@
 
 <div class="fbar card">
   <span class="chip tn addr">{wb.label}</span>
-  <span class="fx" aria-hidden="true">fx</span>
+  <button class="fx" onclick={() => (wb.biblioteca = true)} aria-label="Inserir função" title="Inserir função">fx</button>
   <input
     class="inp"
     type="text"
@@ -67,8 +67,18 @@
   }
 
   .fx {
+    border: 0;
+    background: none;
+    padding: 4px 6px;
+    border-radius: 6px;
+    cursor: pointer;
     font: 400 15px / 1 var(--serif);
     color: var(--fg-4);
+  }
+
+  .fx:hover {
+    background: #fafaf914;
+    color: var(--fg);
   }
 
   .inp {

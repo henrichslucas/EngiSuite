@@ -21,7 +21,7 @@ describe('parseInput', () => {
     expect(parseInput(' -2,5 ')).toBe('-2.5')
   })
   it('preserva fórmulas, texto e vazio', () => {
-    expect(parseInput('=SOMA(A1:A3)')).toBe('=SOMA(A1:A3)')
+    expect(parseInput('=SOMA(A1:A3)')).toBe('=SUM(A1:A3)')
     expect(parseInput('abc')).toBe('abc')
     expect(parseInput('')).toBeNull()
     expect(parseInput(7)).toBe(7)

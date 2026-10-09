@@ -1,3 +1,5 @@
+import { erroLocal, paraCanonico } from './formulas.js'
+
 export const RH = 26
 export const HH = 28
 export const GW = 52
@@ -26,7 +28,7 @@ export function show(v) {
   if (v == null) return ''
   if (typeof v === 'number') return nf.format(v)
   if (typeof v === 'boolean') return v ? 'VERDADEIRO' : 'FALSO'
-  if (typeof v === 'object') return v.value ?? '#ERRO'
+  if (typeof v === 'object') return erroLocal(v.value ?? '#ERROR!')
   return String(v)
 }
 
@@ -38,7 +40,7 @@ export function plain(v) {
 export function parseInput(t) {
   if (typeof t !== 'string') return t
   if (t === '') return null
-  if (t[0] === '=') return t
+  if (t[0] === '=') return paraCanonico(t)
   const s = t.trim()
   if (/^-?\d+,\d+$/.test(s)) return s.replace(',', '.')
   return t

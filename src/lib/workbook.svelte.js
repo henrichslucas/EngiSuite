@@ -1,9 +1,13 @@
 import { HyperFormula } from 'hyperformula'
 import { load, save } from './store.js'
+import { registrarExtras } from './custom.js'
+import { paraLocal } from './formulas.js'
 import { sampleData, sampleName, sampleWidths } from './sample.js'
 import { DEF_W, MAXR, MAXC, addr, clamp, parseInput, plain } from './util.js'
 
 const KEY = 'workbook-v1'
+
+registrarExtras()
 
 class Workbook {
   hf = HyperFormula.buildEmpty({ licenseKey: 'gpl-v3', useColumnIndex: true, maxRows: MAXR, maxColumns: MAXC })
@@ -12,6 +16,7 @@ class Workbook {
   rev = $state(0)
   widthRev = $state(0)
   status = $state('salvo')
+  biblioteca = $state(false)
   ready = $state(false)
   sel = $state({ ar: 0, ac: 0, fr: 0, fc: 0 })
   edit = $state(null)
@@ -91,7 +96,7 @@ class Workbook {
     if (typeof v === 'number') return String(v).replace('.', ',')
     // decimais digitados com vírgula são guardados como texto "1.5" e lidos como número pelo motor
     if (typeof v === 'string' && /^-?\d+\.\d+$/.test(v) && typeof this.cellValue(r, c) === 'number') return v.replace('.', ',')
-    return String(v)
+    return paraLocal(String(v))
   }
 
   colWidth(c) {

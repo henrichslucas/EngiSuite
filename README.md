@@ -45,3 +45,14 @@ A SheetJS publica as versões novas apenas no CDN deles. Para atualizar (a API �
     npm i https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
 
 O `xlsx` já é carregado sob demanda (`import('xlsx')` em `src/lib/io.js`), em chunk separado.
+
+## Fórmulas
+
+As fórmulas seguem o Excel em português: `=SOMA(A1:A9)`, `=SE(A1>1,5;"ok";"não")`, `=PROCV(A1;Dados!A:C;3;FALSO)`.
+Argumentos são separados por `;` e o decimal é a vírgula. Os nomes em inglês também são aceitos (`=SUM(A1;A2)`).
+
+- Internamente o motor (HyperFormula, ~420 funções) guarda a forma canônica, a mesma do .xlsx; a tradução é feita só na digitação e na exibição (`src/lib/formulas.js`). Importar e exportar .xlsx não muda as fórmulas.
+- Ao digitar `=` e o começo de um nome, aparecem sugestões (Tab insere) e a dica de sintaxe da função em edição. O botão **fx** abre a biblioteca com busca e categorias (`src/lib/catalogo.js`).
+- Funções extras que o motor não tem: `CONVERTER` (unidades, incluindo kgf e tf), `CONCAT`, `ORDEM`, `MODO` e `INTERCEPÇÃO` (`src/lib/custom.js`).
+- Erros aparecem em português (`#NOME?`, `#VALOR!`, `#DIV/0!`, `#N/D`).
+- Os nomes em português seguem o Excel pt-BR. Funções sem tradução na tabela usam o nome em inglês.
