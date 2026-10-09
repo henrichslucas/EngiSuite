@@ -22,7 +22,11 @@ Suíte de ferramentas de engenharia civil no navegador. Primeiro módulo: planil
 - `src/modules/`: módulos de cálculo (cada um com `nome.js` puro e testado, e `Nome.svelte` com a tela), registrados em `index.js`:
   viga (flexão), cisalhamento, esforços e flecha (diagramas), laje (As por metro), pilar (esbeltez e compressão centrada),
   sapata (tensões no solo), ancoragem e emenda, propriedades de seção e conversor de unidades.
+  Também: flecha em concreto (Branson e diferida), pilar em flexo-compressão (diagrama N-M) e perfil I de aço (NBR 8800). Resultados podem ser copiados ou impressos como memória de cálculo.
   Referência: NBR 6118:2014. São ferramentas de apoio e verificação: confira os resultados antes de usar em projeto.
+- `src/cad/`: desenho 2D estilo CAD (linha, polilinha, retângulo, círculo, arco, texto, cota, mover, copiar, girar, espelhar, camadas, snaps, ortho, linha de comando). Importa e exporta DXF (ASCII; escrita R12) e exporta SVG. DWG é proprietário e não é lido: salve como DXF no AutoCAD.
+  Linha de comando: `3;4` (absoluto), `@2;0` (relativo), `@5<45` (polar), `2,5` (distância); a vírgula é decimal.
+- `src/viewer3d/`: mobiliar cômodos em 3D (three.js, carregado sob demanda): catálogo paramétrico, arrastar, girar, encostar na parede, colisões, vistas (3D, planta, frente, lado), PNG, salvar/abrir JSON.
 - `src/app.css`: tokens e componentes do design de referência
 
 ## Atalhos

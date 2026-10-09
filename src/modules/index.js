@@ -10,10 +10,12 @@ import Flecha from './Flecha.svelte'
 import PilarFlexo from './PilarFlexo.svelte'
 import Aco from './Aco.svelte'
 import Cad from '../cad/Cad.svelte'
+import Viewer3D from '../viewer3d/Viewer3D.svelte'
 import Unidades from './Unidades.svelte'
 
 export const MODULOS = [
   { id: 'cad', nome: 'Desenho 2D (CAD)', componente: Cad },
+  { id: 'mobiliar', nome: 'Mobiliar 3D', componente: Viewer3D },
   { id: 'viga', nome: 'Viga: flexão', componente: Viga },
   { id: 'cisalhamento', nome: 'Viga: cisalhamento', componente: Cisalhamento },
   { id: 'esforcos', nome: 'Esforços e flecha', componente: Esforcos },

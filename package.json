@@ -19,6 +19,7 @@
     "@fontsource-variable/faustina": "^5.3.0",
     "@fontsource-variable/geist": "^5.3.0",
     "hyperformula": "^3.5.0",
+    "three": "^0.186.1",
     "xlsx": "^0.18.5"
   }
 }
