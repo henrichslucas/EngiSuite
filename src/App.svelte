@@ -6,7 +6,7 @@
   import Grid from './lib/Grid.svelte'
   import FormulaBar from './lib/FormulaBar.svelte'
   import Icon from './lib/Icon.svelte'
-  import Viga from './modules/Viga.svelte'
+  import { MODULOS } from './modules/index.js'
 
   let mod = $state('planilhas')
 
@@ -129,10 +129,15 @@
 
       <nav class="seg mods" aria-label="Módulos">
         <button class:on={mod === 'planilhas'} aria-current={mod === 'planilhas' ? 'page' : undefined} onclick={() => (mod = 'planilhas')}>Planilhas</button>
-        <button class:on={mod === 'viga'} aria-current={mod === 'viga' ? 'page' : undefined} onclick={() => (mod = 'viga')}>Viga de concreto</button>
-        <button disabled title="Em breve">Desenho</button>
-        <button disabled title="Em breve">Quantitativos</button>
+        {#each MODULOS as m (m.id)}
+          <button class:on={mod === m.id} aria-current={mod === m.id ? 'page' : undefined} onclick={() => (mod = m.id)}>{m.nome}</button>
+        {/each}
       </nav>
+
+      <select class="modsel" bind:value={mod} aria-label="Módulo">
+        <option value="planilhas">Planilhas</option>
+        {#each MODULOS as m (m.id)}<option value={m.id}>{m.nome}</option>{/each}
+      </select>
 
       <div class="right">
         {#if mod === 'planilhas'}
@@ -168,9 +173,12 @@
     </div>
   </header>
 
-  {#if mod === 'viga'}
+  {#if mod !== 'planilhas'}
     <div class="modview">
-      <Viga />
+      {#key mod}
+        {@const Comp = MODULOS.find((m) => m.id === mod).componente}
+        <Comp />
+      {/key}
     </div>
   {:else}
 
@@ -256,6 +264,20 @@
     background: radial-gradient(110% 90% at 55% 50%, #141310, #0f0e0d 58%, #0b0a09);
   }
 
+  .modsel {
+    display: none;
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--line-2);
+    border-radius: 100px;
+    background: #15141299;
+    font: 500 13px / 1 var(--sans);
+  }
+
+  .modsel option {
+    background: var(--panel-2);
+  }
+
   .modview {
     grid-row: 2 / 5;
     min-height: 0;
@@ -281,6 +303,10 @@
 
   .mods {
     margin-inline: auto;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
   .right {
@@ -439,6 +465,10 @@
   @container top (max-width: 640px) {
     .mods {
       display: none;
+    }
+
+    .modsel {
+      display: block;
     }
 
     .right {

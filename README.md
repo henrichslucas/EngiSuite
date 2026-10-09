@@ -19,7 +19,10 @@ Suíte de ferramentas de engenharia civil no navegador. Primeiro módulo: planil
 - `src/lib/workbook.svelte.js`: estado, motor de fórmulas (HyperFormula) e salvamento local (IndexedDB)
 - `src/lib/Grid.svelte`: grade em canvas virtualizada
 - `src/lib/io.js`: importação e exportação (.xlsx, .csv)
-- `src/modules/viga.js` e `Viga.svelte`: módulo de viga de concreto armado à flexão (NBR 6118), testes em `tests/viga.test.js`
+- `src/modules/`: módulos de cálculo (cada um com `nome.js` puro e testado, e `Nome.svelte` com a tela), registrados em `index.js`:
+  viga (flexão), cisalhamento, esforços e flecha (diagramas), laje (As por metro), pilar (esbeltez e compressão centrada),
+  sapata (tensões no solo), ancoragem e emenda, propriedades de seção e conversor de unidades.
+  Referência: NBR 6118:2014. São ferramentas de apoio e verificação: confira os resultados antes de usar em projeto.
 - `src/app.css`: tokens e componentes do design de referência
 
 ## Atalhos

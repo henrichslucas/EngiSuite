@@ -103,3 +103,7 @@ export function calcularViga(entrada, { gf = 1.4, gc = 1.4, gs = 1.15 } = {}) {
     avisos
   }
 }
+
+export function fctm(fck) {
+  return fck <= 50 ? 0.3 * fck ** (2 / 3) : 2.12 * Math.log(1 + 0.11 * fck) // MPa
+}
