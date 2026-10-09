@@ -19,6 +19,7 @@ Suíte de ferramentas de engenharia civil no navegador. Primeiro módulo: planil
 - `src/lib/workbook.svelte.js`: estado, motor de fórmulas (HyperFormula) e salvamento local (IndexedDB)
 - `src/lib/Grid.svelte`: grade em canvas virtualizada
 - `src/lib/io.js`: importação e exportação (.xlsx, .csv)
+- `src/modules/viga.js` e `Viga.svelte`: módulo de viga de concreto armado à flexão (NBR 6118), testes em `tests/viga.test.js`
 - `src/app.css`: tokens e componentes do design de referência
 
 ## Atalhos

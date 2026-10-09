@@ -6,6 +6,9 @@
   import Grid from './lib/Grid.svelte'
   import FormulaBar from './lib/FormulaBar.svelte'
   import Icon from './lib/Icon.svelte'
+  import Viga from './modules/Viga.svelte'
+
+  let mod = $state('planilhas')
 
   let fileInput
   let menuOpen = $state(false)
@@ -125,12 +128,14 @@
       <span class="brand">EngiSuite</span>
 
       <nav class="seg mods" aria-label="Módulos">
-        <button class="on" aria-current="page">Planilhas</button>
+        <button class:on={mod === 'planilhas'} aria-current={mod === 'planilhas' ? 'page' : undefined} onclick={() => (mod = 'planilhas')}>Planilhas</button>
+        <button class:on={mod === 'viga'} aria-current={mod === 'viga' ? 'page' : undefined} onclick={() => (mod = 'viga')}>Viga de concreto</button>
         <button disabled title="Em breve">Desenho</button>
         <button disabled title="Em breve">Quantitativos</button>
       </nav>
 
       <div class="right">
+        {#if mod === 'planilhas'}
         <span class="status" role="status">
           <span class="dot" class:busy={wb.status === 'salvando'} class:err={wb.status === 'erro'}></span>
           <span class="status-txt">{notice || statusText}</span>
@@ -158,9 +163,16 @@
             </div>
           {/if}
         </div>
+        {/if}
       </div>
     </div>
   </header>
+
+  {#if mod === 'viga'}
+    <div class="modview">
+      <Viga />
+    </div>
+  {:else}
 
   <div class="enter" style="animation-delay: 70ms">
     <FormulaBar {wb} />
@@ -219,6 +231,7 @@
       </div>
     {/if}
   </footer>
+  {/if}
 </div>
 
 <input bind:this={fileInput} type="file" accept=".xlsx,.xls,.ods,.csv,.tsv" multiple hidden onchange={onPick} />
@@ -241,6 +254,11 @@
     gap: 12px;
     padding: max(14px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
     background: radial-gradient(110% 90% at 55% 50%, #141310, #0f0e0d 58%, #0b0a09);
+  }
+
+  .modview {
+    grid-row: 2 / 5;
+    min-height: 0;
   }
 
   .top {
