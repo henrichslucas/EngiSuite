@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CATALOGO } from '../src/viewer3d/catalog.js'
+import { CATALOGO, extensao, gruposDe, itensDe, opcoesPadrao } from '../src/viewer3d/catalog.js'
 import { cantos, caixa, colisoes, grade, limitar, novoItem, ocupacao, sobrepoe } from '../src/viewer3d/layout.js'
 
 const sala = { w: 4, d: 3, h: 2.7 }
@@ -44,20 +44,51 @@ describe('layout', () => {
 describe('catálogo', () => {
   it('todas as partes ficam dentro das dimensões declaradas', () => {
     for (const [k, c] of Object.entries(CATALOGO)) {
-      const partes = c.partes(c.w, c.d, c.h)
-      expect(partes.length, k).toBeGreaterThan(0)
-      for (const p of partes) {
-        const sx = p.t === 'box' ? p.sx : p.r * 2
-        const sz = p.t === 'box' ? p.sz : p.r * 2
-        expect(Math.abs(p.x) + sx / 2, `${k} x`).toBeLessThanOrEqual(c.w / 2 + 0.05)
-        expect(Math.abs(p.z) + sz / 2, `${k} z`).toBeLessThanOrEqual(c.d / 2 + 0.05)
-        expect(p.y - p.sy / 2, `${k} y0`).toBeGreaterThanOrEqual(-0.01)
-        expect(p.y + p.sy / 2, `${k} y1`).toBeLessThanOrEqual(c.h + 0.06)
+      const folga = c.folga ?? 0.05
+      const variantes = c.opcoes ? [opcoesPadrao(k), ...c.opcoes.flatMap((o) => o.valores.map(([v]) => ({ ...opcoesPadrao(k), [o.k]: v })))] : [undefined]
+      for (const op of variantes) {
+        const partes = c.partes(c.w, c.d, c.h, op)
+        expect(partes.length, k).toBeGreaterThan(0)
+        for (const p of partes) {
+          const { ex, ey, ez } = extensao(p)
+          expect(Math.abs(p.x) + ex / 2, `${k} x`).toBeLessThanOrEqual(c.w / 2 + folga)
+          expect(Math.abs(p.z) + ez / 2, `${k} z`).toBeLessThanOrEqual(c.d / 2 + folga)
+          expect(p.y - ey / 2, `${k} y0`).toBeGreaterThanOrEqual(-0.01)
+          expect(p.y + ey / 2, `${k} y1`).toBeLessThanOrEqual(c.h + 0.06)
+        }
       }
     }
+  })
+  it('cada item tem modo e grupo; zonas não colidem', () => {
+    for (const [k, c] of Object.entries(CATALOGO)) {
+      expect(['interno', 'externo', 'ambos', undefined], k).toContain(c.modo)
+      if (c.zona) expect(c.fantasma, k).toBe(true)
+    }
+    expect(gruposDe('externo')).toEqual(expect.arrayContaining(['Pisos e solo', 'Vegetação', 'Construção', 'Área externa']))
+    expect(gruposDe('interno')).not.toContain('Vegetação')
+    expect(itensDe('externo', 'Pisos e solo').map(([k]) => k)).toContain('gramado')
   })
   it('novo item parte do centro com dimensões do catálogo', () => {
     const n = novoItem('sofa', sala)
     expect(n).toMatchObject({ x: 2, z: 1.5, w: 2, d: 0.9, h: 0.85 })
+  })
+})
+
+describe('cenas de exemplo', () => {
+  it('ficam dentro do terreno/cômodo e sem colisões', async () => {
+    const { exemploExterno, exemploInterno, salaPadrao } = await import('../src/viewer3d/exemplos.js')
+    for (const modo of ['interno', 'externo']) {
+      const sala = salaPadrao(modo)
+      const itens = modo === 'externo' ? exemploExterno(sala) : exemploInterno(sala)
+      expect(itens.length).toBeGreaterThan(2)
+      for (const i of itens) {
+        const b = caixa(i)
+        expect(b.x1, `${i.tipo} x1`).toBeGreaterThanOrEqual(-1e-6)
+        expect(b.z1, `${i.tipo} z1`).toBeGreaterThanOrEqual(-1e-6)
+        expect(b.x2, `${i.tipo} x2`).toBeLessThanOrEqual(sala.w + 1e-6)
+        expect(b.z2, `${i.tipo} z2`).toBeLessThanOrEqual(sala.d + 1e-6)
+      }
+      expect([...colisoes(itens)].map((id) => itens.find((i) => i.id === id).tipo)).toEqual([])
+    }
   })
 })

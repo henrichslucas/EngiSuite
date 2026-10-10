@@ -251,10 +251,14 @@
     return { k: 'cell', r, c: Math.max(0, c), px, py }
   }
 
+  let tapEdit = null
+
   function onPointerDown(e) {
     if (e.button !== 0) return
     wb.commitEdit()
     const h = hit(e)
+    // toque numa célula que já estava selecionada (sem arrastar) entra em edição
+    tapEdit = e.pointerType === 'touch' && h.k === 'cell' && !wb.multi && wb.sel.ar === h.r && wb.sel.ac === h.c ? { r: h.r, c: h.c } : null
     canvas.setPointerCapture(e.pointerId)
     const s = wb.sel
     if (h.k === 'corner') {
@@ -306,9 +310,13 @@
     else if (drag.k === 'row' && h.r != null) s.fr = h.r
   }
 
-  function onPointerUp() {
+  function onPointerUp(e) {
     if (drag?.k === 'resize') wb.touch()
     drag = null
+    if (tapEdit && e.type === 'pointerup') {
+      wb.startEdit('edit', wb.raw(tapEdit.r, tapEdit.c))
+    }
+    tapEdit = null
   }
 
   function onDblClick(e) {

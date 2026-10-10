@@ -26,7 +26,7 @@ Suíte de ferramentas de engenharia civil no navegador. Primeiro módulo: planil
   Referência: NBR 6118:2014. São ferramentas de apoio e verificação: confira os resultados antes de usar em projeto.
 - `src/cad/`: desenho 2D estilo CAD (linha, polilinha, retângulo, círculo, arco, texto, cota, mover, copiar, girar, espelhar, camadas, snaps, ortho, linha de comando). Importa e exporta DXF (ASCII; escrita R12) e exporta SVG. DWG é proprietário e não é lido: salve como DXF no AutoCAD.
   Linha de comando: `3;4` (absoluto), `@2;0` (relativo), `@5<45` (polar), `2,5` (distância); a vírgula é decimal.
-- `src/viewer3d/`: mobiliar cômodos em 3D (three.js, carregado sob demanda): catálogo paramétrico, arrastar, girar, encostar na parede, colisões, vistas (3D, planta, frente, lado), PNG, salvar/abrir JSON.
+- `src/viewer3d/`: ambientes 3D (three.js, carregado sob demanda), internos e externos. Interno: móveis, paredes automáticas. Externo: terreno com solo (grama, terra, areia, concreto, pedra, deck), pisos e calçadas, piscina, vegetação (árvore, palmeira, arbusto, cerca viva, canteiro), construções (casa com telhado e pavimentos, muro, cerca, portão, garagem, pergolado), área externa (banco, churrasqueira, ombrelone, carro…) e hora do dia (sol e sombras). Arrastar, girar, encostar, colisões, desfazer/refazer, **Resetar** (exemplo, limpar tudo ou só a câmera), vistas, PNG e salvar/abrir JSON.
 - `src/app.css`: tokens e componentes do design de referência
 
 ## Atalhos
@@ -56,3 +56,9 @@ Argumentos são separados por `;` e o decimal é a vírgula. Os nomes em inglês
 - Funções extras que o motor não tem: `CONVERTER` (unidades, incluindo kgf e tf), `CONCAT`, `ORDEM`, `MODO` e `INTERCEPÇÃO` (`src/lib/custom.js`).
 - Erros aparecem em português (`#NOME?`, `#VALOR!`, `#DIV/0!`, `#N/D`).
 - Os nomes em português seguem o Excel pt-BR. Funções sem tradução na tabela usam o nome em inglês.
+
+## Celular e instalação (PWA)
+
+- O layout é responsivo: em telas estreitas, as quatro áreas (Planilhas, Cálculos, Desenho 2D, Ambientes 3D) ficam numa barra inferior; o 3D usa um painel inferior com abas; o desenho 2D tem barras rolantes, botões Concluir/Cancelar e zoom/deslocamento com dois dedos; na planilha, tocar numa célula já selecionada edita.
+- Campos usam 16px em telas de toque (evita o zoom automático do iOS) e a área segura (notch) é respeitada.
+- `public/manifest.webmanifest`, os ícones e `public/sw.js` tornam o app instalável e utilizável offline depois da primeira visita (em produção). Para empacotar como app nativo, o caminho mais curto é o Capacitor sobre o `dist`.

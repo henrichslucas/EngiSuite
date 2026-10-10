@@ -1,5 +1,5 @@
 // Posicionamento em planta: retângulos orientados, colisões e limites do cômodo (metros, graus).
-import { CATALOGO } from './catalog.js'
+import { CATALOGO, opcoesPadrao } from './catalog.js'
 
 const RAD = Math.PI / 180
 
@@ -77,5 +77,5 @@ export function ocupacao(items, sala) {
 let n = 0
 export const novoItem = (tipo, sala) => {
   const c = CATALOGO[tipo]
-  return { id: `m${Date.now().toString(36)}${(n++).toString(36)}`, tipo, x: sala.w / 2, z: sala.d / 2, rot: 0, w: c.w, d: c.d, h: c.h, cor: c.cor, elev: c.elev ?? 0 }
+  return { id: `m${Date.now().toString(36)}${(n++).toString(36)}`, tipo, x: sala.w / 2, z: sala.d / 2, rot: 0, w: c.w, d: c.d, h: c.h, cor: c.cor, elev: c.elev ?? 0, op: opcoesPadrao(tipo) }
 }

@@ -9,6 +9,7 @@
   import FormulaHelper from './lib/FormulaHelper.svelte'
   import Biblioteca from './lib/Biblioteca.svelte'
   import { MODULOS } from './modules/index.js'
+  import Nav from './lib/Nav.svelte'
 
   let mod = $state('planilhas')
 
@@ -129,17 +130,9 @@
     <div class="top-in">
       <span class="brand">EngiSuite</span>
 
-      <nav class="seg mods" aria-label="Módulos">
-        <button class:on={mod === 'planilhas'} aria-current={mod === 'planilhas' ? 'page' : undefined} onclick={() => (mod = 'planilhas')}>Planilhas</button>
-        {#each MODULOS as m (m.id)}
-          <button class:on={mod === m.id} aria-current={mod === m.id ? 'page' : undefined} onclick={() => (mod = m.id)}>{m.nome}</button>
-        {/each}
-      </nav>
+      <div class="mods"><Nav bind:mod variante="top" /></div>
 
-      <select class="modsel" bind:value={mod} aria-label="Módulo">
-        <option value="planilhas">Planilhas</option>
-        {#each MODULOS as m (m.id)}<option value={m.id}>{m.nome}</option>{/each}
-      </select>
+
 
       <div class="right">
         {#if mod === 'planilhas'}
@@ -242,6 +235,8 @@
     {/if}
   </footer>
   {/if}
+
+  <div class="tabbar card"><Nav bind:mod variante="bottom" /></div>
 </div>
 
 <FormulaHelper />
@@ -264,23 +259,10 @@
     inset: 0;
     display: grid;
     grid-template-rows: 44px 36px minmax(0, 1fr) 40px;
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
     padding: max(14px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
     background: radial-gradient(110% 90% at 55% 50%, #141310, #0f0e0d 58%, #0b0a09);
-  }
-
-  .modsel {
-    display: none;
-    height: 36px;
-    padding: 0 12px;
-    border: 1px solid var(--line-2);
-    border-radius: 100px;
-    background: #15141299;
-    font: 500 13px / 1 var(--sans);
-  }
-
-  .modsel option {
-    background: var(--panel-2);
   }
 
   @media print {
@@ -298,6 +280,12 @@
     .modview {
       grid-row: auto;
     }
+  }
+
+  .tabbar {
+    display: none;
+    padding: 0;
+    overflow: visible;
   }
 
   .modview {
@@ -326,9 +314,6 @@
   .mods {
     margin-inline: auto;
     min-width: 0;
-    max-width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
 
   .right {
@@ -484,19 +469,6 @@
     }
   }
 
-  @container top (max-width: 640px) {
-    .mods {
-      display: none;
-    }
-
-    .modsel {
-      display: block;
-    }
-
-    .right {
-      margin-left: auto;
-    }
-  }
 
   @media (max-width: 740px) {
     .stats {
@@ -504,8 +476,46 @@
     }
 
     .app {
-      padding-left: 12px;
-      padding-right: 12px;
+      padding-left: max(10px, env(safe-area-inset-left));
+      padding-right: max(10px, env(safe-area-inset-right));
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-bottom: max(8px, env(safe-area-inset-bottom));
+      gap: 8px;
+      grid-template-rows: 44px 40px minmax(0, 1fr) 44px auto;
+    }
+
+    .mods {
+      display: none;
+    }
+
+    .right {
+      margin-left: auto;
+    }
+
+    .top-in {
+      gap: 10px;
+    }
+
+    .brand {
+      font-size: 20px;
+    }
+
+    .tabbar {
+      display: block;
+      grid-row: 5;
+      border-radius: 18px;
+    }
+
+    .modview {
+      grid-row: 2 / 5;
+    }
+  }
+
+  /* celular deitado: sobra pouca altura, então a barra inferior vira compacta */
+  @media (max-height: 480px) and (max-width: 950px) {
+    .app {
+      grid-template-rows: 40px 36px minmax(0, 1fr) 36px auto;
+      gap: 6px;
     }
   }
 </style>

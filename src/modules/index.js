@@ -29,3 +29,21 @@ export const MODULOS = [
   { id: 'secao', nome: 'Seções', componente: Secao },
   { id: 'unidades', nome: 'Unidades', componente: Unidades }
 ]
+
+// Navegação em 4 áreas; as calculadoras ficam agrupadas no menu "Cálculos".
+export const AREAS = [
+  { id: 'planilhas', nome: 'Planilhas', icone: 'table' },
+  { id: 'calculos', nome: 'Cálculos', icone: 'calc' },
+  { id: 'cad', nome: 'Desenho 2D', icone: 'pen' },
+  { id: 'mobiliar', nome: 'Ambientes 3D', icone: 'cube' }
+]
+
+export const CALC_GRUPOS = [
+  { nome: 'Concreto armado', ids: ['viga', 'cisalhamento', 'flecha', 'laje', 'pilar', 'pilarflexo', 'ancoragem'] },
+  { nome: 'Estruturas e fundações', ids: ['esforcos', 'secao', 'aco', 'sapata'] },
+  { nome: 'Utilidades', ids: ['unidades'] }
+]
+
+export const CALC_IDS = CALC_GRUPOS.flatMap((g) => g.ids)
+export const areaDe = (mod) => (mod === 'planilhas' || mod === 'cad' || mod === 'mobiliar' ? mod : 'calculos')
+export const nomeDe = (id) => MODULOS.find((m) => m.id === id)?.nome ?? id

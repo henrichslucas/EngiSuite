@@ -315,7 +315,7 @@
     pointers.set(ev.pointerId, local(ev))
     if (pointers.size === 2) {
       const [a, b] = [...pointers.values()]
-      pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), k: D.view.k }
+      pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), k: D.view.k, mx: (a[0] + b[0]) / 2, my: (a[1] + b[1]) / 2 }
       box = null
       drag = null
       pan = null
@@ -348,7 +348,15 @@
     if (pointers.has(ev.pointerId)) pointers.set(ev.pointerId, [px, py])
     if (pinch && pointers.size === 2) {
       const [a, b] = [...pointers.values()]
+      const mx = (a[0] + b[0]) / 2
+      const my = (a[1] + b[1]) / 2
+      const antes = [wx(pinch.mx), wy(pinch.my)]
       D.view.k = Math.min(Math.max(pinch.k * (Math.hypot(a[0] - b[0], a[1] - b[1]) / pinch.d), 0.01), 1e6)
+      // mantém sob os dedos o ponto que estava sob o centro da pinça (zoom e deslocamento juntos)
+      D.view.cx += antes[0] - wx(mx)
+      D.view.cy += antes[1] - wy(my)
+      pinch.mx = mx
+      pinch.my = my
       return
     }
     if (pan) {
@@ -742,8 +750,12 @@
   <div class="cmdbar">
     <span class="hint">{hint}</span>
     <form onsubmit={(e) => (e.preventDefault(), onCommand())}>
-      <input bind:this={cmdEl} bind:value={cmd} placeholder="Comando ou ponto: 3;4 · @2;0 · @5&lt;45 · 2,5 (distância)" autocomplete="off" spellcheck="false" aria-label="Linha de comando" />
+      <input bind:this={cmdEl} bind:value={cmd} placeholder="Comando ou ponto: 3;4 · @2;0 · @5&lt;45 · 2,5" autocomplete="off" spellcheck="false" aria-label="Linha de comando" />
     </form>
+    <span class="acoes">
+      <button class="btn sm" onclick={finish} title="Enter">Concluir</button>
+      <button class="btn sm" onclick={cancel} title="Esc">Cancelar</button>
+    </span>
     <span class="coords tn">{fmt(cur[0])}, {fmt(cur[1])} {D.unidade}</span>
   </div>
   {#if msg || info}<div class="msg" role="status">{msg || info}</div>{/if}
@@ -870,7 +882,7 @@
   }
   .cmdbar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto auto;
     gap: 12px;
     align-items: center;
     padding: 8px 12px;
@@ -883,8 +895,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+  .cmdbar > * {
+    min-width: 0;
+  }
   .cmdbar input {
     width: 100%;
+    min-width: 0;
     height: 30px;
     border: 1px solid var(--line-2);
     border-radius: 8px;
@@ -903,12 +919,63 @@
     color: var(--fg-2);
     font-size: 12px;
   }
-  @media (max-width: 700px) {
+  .acoes {
+    display: flex;
+    gap: 6px;
+  }
+  @media (max-width: 760px) {
+    .bar {
+      padding: 6px 8px;
+      gap: 4px;
+    }
+    .tools,
+    .opts-row {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tools > *,
+    .opts-row > * {
+      flex: none;
+    }
+    .tbtn {
+      height: 36px;
+    }
+    .lay span {
+      display: none;
+    }
     .cmdbar {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr auto;
+      gap: 6px 8px;
+      padding: 6px 8px;
     }
     .hint {
+      grid-column: 1 / -1;
       white-space: normal;
+      font-size: 11px;
+      line-height: 1.3;
+    }
+    .cmdbar form {
+      grid-column: 1 / -1;
+    }
+    .cmdbar input {
+      height: 38px;
+    }
+    .acoes {
+      grid-column: 1;
+    }
+    .coords {
+      grid-column: 2;
+      justify-self: end;
+    }
+    .msg {
+      padding: 4px 8px 8px;
+    }
+    .layers {
+      left: 8px;
+      right: 8px;
+      width: auto;
     }
   }
 </style>

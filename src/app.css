@@ -33,6 +33,7 @@ html,
 body {
   margin: 0;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
   background: var(--bg);
@@ -477,4 +478,79 @@ input {
   .mod .warn {
     color: #7a5a00;
   }
+}
+
+/* toque e celular */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+.tab,
+.chip {
+  touch-action: manipulation;
+}
+
+@media (pointer: coarse) {
+  /* 16px evita o zoom automático do iOS ao focar um campo */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  .btn {
+    min-height: 40px;
+  }
+
+  .mod .in,
+  .mod .field input,
+  .mod select {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 760px) {
+  .mod {
+    gap: 8px;
+  }
+
+  .mod .pad {
+    padding: 16px 14px;
+  }
+
+  .mod h2 {
+    font-size: 22px;
+  }
+
+  .mod .fields {
+    gap: 10px;
+  }
+
+  .mod .res {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mod .res .big dd {
+    font-size: 19px;
+  }
+
+  .mod .head {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 380px) {
+  .mod .fields {
+    grid-template-columns: 1fr;
+  }
+
+  .mod .res {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mod .res dd,
+.mod .res dt {
+  overflow-wrap: anywhere;
 }
